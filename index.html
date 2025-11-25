@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Laima - Baltic Task Manager</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1d21">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1d21;
+      --bg-secondary: #252a30;
+      --bg-card: #2d333b;
+      --bg-elevated: #353d47;
+      --text-primary: #f0ebe3;
+      --text-secondary: #b8b2a7;
+      --text-muted: #7d7a75;
+      --accent-amber: #d4a853;
+      --accent-amber-light: #e8c274;
+      --accent-amber-dark: #b8923f;
+      --accent-forest: #5a8a6e;
+      --accent-forest-light: #6fa583;
+      --accent-brick: #c17f59;
+      --accent-sea: #6a8fa3;
+      --accent-purple: #9a7bb8;
+      --accent-linen: #3d4450;
+      --border-light: #3d444d;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Source Sans 3', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Baltic pattern background */
+    .bg-pattern-1 {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      background-image: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 80px,
+          rgba(212, 168, 83, 0.12) 80px,
+          rgba(212, 168, 83, 0.12) 81px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 80px,
+          rgba(212, 168, 83, 0.12) 80px,
+          rgba(212, 168, 83, 0.12) 81px
+        );
+      pointer-events: none;
+      z-index: 0;
+      animation: movePattern1 60s linear infinite;
+    }
+
+    .bg-pattern-2 {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      background-image: 
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 56px,
+          rgba(90, 138, 110, 0.08) 56px,
+          rgba(90, 138, 110, 0.08) 57px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 56px,
+          rgba(90, 138, 110, 0.08) 56px,
+          rgba(90, 138, 110, 0.08) 57px
+        );
+      pointer-events: none;
+      z-index: 0;
+      animation: movePattern2 90s linear infinite;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse at 10% 10%, rgba(212, 168, 83, 0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 90%, rgba(90, 138, 110, 0.08) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes movePattern1 {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(80px, 80px); }
+    }
+
+    @keyframes movePattern2 {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-56px, 56px) rotate(5deg); }
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 30px 0 24px;
+    }
+
+    .header-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .header h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent-amber-light);
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 12px rgba(212, 168, 83, 0.3);
+    }
+
+    .header .subtitle {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .current-time {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-top: 14px;
+      font-weight: 500;
+    }
+
+    .night-mode-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-top: 10px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-secondary);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--accent-amber-light);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text-secondary);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Quick Schedule Card */
+    .schedule-card {
+      background: linear-gradient(135deg, var(--accent-forest) 0%, rgba(90, 138, 110, 0.8) 100%);
+      border: 1px solid rgba(111, 165, 131, 0.3);
+      color: white;
+    }
+
+    .schedule-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .schedule-inputs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .schedule-input-group {
+      flex: 1;
+    }
+
+    .schedule-input-group label {
+      display: block;
+      font-size: 0.7rem;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+
+    .schedule-input-group input {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius-sm);
+      color: white;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .schedule-input-group input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .schedule-btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: var(--radius-sm);
+      color: white;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .schedule-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Voice Input Section */
+    .voice-section {
+      text-align: center;
+    }
+
+    .voice-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-amber);
+      background: var(--bg-elevated);
+      color: var(--accent-amber);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .voice-btn:hover {
+      background: var(--accent-amber);
+      color: var(--bg-primary);
+      box-shadow: 0 0 20px rgba(212, 168, 83, 0.4);
+    }
+
+    .voice-btn.listening {
+      background: var(--accent-amber);
+      color: var(--bg-primary);
+      animation: gentlePulse 2s infinite;
+      box-shadow: 0 0 30px rgba(212, 168, 83, 0.5);
+    }
+
+    .voice-btn.listening::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-amber);
+      opacity: 0.5;
+      animation: expandRing 2s infinite;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    @keyframes expandRing {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    .voice-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      min-height: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* Input Group */
+    .input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+
+    .input-group input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 12px 20px;
+      background: var(--accent-amber);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-amber-light);
+      box-shadow: 0 4px 12px rgba(212, 168, 83, 0.3);
+    }
+
+    .btn-icon {
+      padding: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+
+    .btn-icon:hover {
+      background: var(--accent-linen);
+      color: var(--text-primary);
+    }
+
+    /* AI Assistant */
+    .ai-section {
+      position: relative;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ai-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-forest) 0%, var(--accent-forest-light) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px rgba(90, 138, 110, 0.3);
+    }
+
+    .ai-info {
+      flex: 1;
+    }
+
+    .ai-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .ai-status {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .ai-message {
+      background: var(--bg-elevated);
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+      border-left: 3px solid var(--accent-forest);
+    }
+
+    .ai-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .ai-action-btn {
+      padding: 9px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-action-btn:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+
+    /* Task Section */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .task-count {
+      background: var(--accent-forest);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    /* Progress Bar */
+    .progress-section {
+      margin-bottom: 16px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .progress-label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .progress-value {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-forest-light);
+    }
+
+    .progress-bar {
+      height: 5px;
+      background: var(--bg-elevated);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-forest) 0%, var(--accent-forest-light) 100%);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    /* Task List */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task-item {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      transition: all 0.25s ease;
+      position: relative;
+      cursor: grab;
+    }
+
+    .task-item:active {
+      cursor: grabbing;
+    }
+
+    .task-item.dragging {
+      opacity: 0.5;
+      transform: scale(1.02);
+    }
+
+    .task-item.drag-over {
+      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+
+    .task-item:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent-amber-dark);
+    }
+
+    .task-item.completed {
+      opacity: 0.5;
+      background: var(--bg-secondary);
+    }
+
+    .task-item.completed .task-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-item.urgent {
+      border-left: 3px solid var(--accent-brick);
+    }
+
+    .task-item.in-progress {
+      border-left: 3px solid var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+
+    .task-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .task-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border-light);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      margin-top: 1px;
+    }
+
+    .task-checkbox:hover {
+      border-color: var(--accent-amber);
+    }
+
+    .task-checkbox.checked {
+      background: var(--accent-forest);
+      border-color: var(--accent-forest);
+      color: white;
+      font-size: 0.7rem;
+    }
+
+    .task-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+    }
+
+    .task-times {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .task-time-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .task-time-item.start {
+      color: var(--accent-amber);
+    }
+
+    .task-time-item.goal {
+      color: var(--accent-forest-light);
+    }
+
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+
+    .task-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-weight: 500;
+    }
+
+    .task-date {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+    }
+
+    .task-category {
+      color: white;
+    }
+
+    .task-category.deadline { background: var(--accent-brick); }
+    .task-category.research { background: var(--accent-sea); }
+    .task-category.create { background: var(--accent-forest); }
+    .task-category.work { background: var(--accent-purple); }
+    .task-category.investigate { background: #7a8b6e; }
+
+    .task-duration {
+      background: transparent;
+      color: var(--text-muted);
+      padding-left: 0;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .task-action-btn {
+      padding: 7px 12px;
+      background: transparent;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .task-action-btn:hover {
+      background: var(--bg-elevated);
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    .task-action-btn.delete:hover {
+      border-color: #e57373;
+      color: #e57373;
+      background: rgba(229, 115, 115, 0.1);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      width: 56px;
+      height: 56px;
+      stroke: var(--border-light);
+      stroke-width: 1;
+      fill: none;
+      margin-bottom: 14px;
+    }
+
+    .empty-state p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-card);
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.4s ease;
+      border: 1px solid var(--accent-amber);
+      max-width: 90%;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-amber);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--bg-primary);
+      flex-shrink: 0;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      margin-bottom: 2px;
+    }
+
+    .toast-message {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlide 0.3s ease;
+      border: 1px solid var(--border-light);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal h3 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent-amber-light);
+      margin-bottom: 20px;
+    }
+
+    .modal-field {
+      margin-bottom: 16px;
+    }
+
+    .modal-field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-field input,
+    .modal-field select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .modal-field input:focus,
+    .modal-field select:focus {
+      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+
+    .modal-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-row .modal-field {
+      flex: 1;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .modal-btn.primary {
+      background: var(--accent-amber);
+      color: var(--bg-primary);
+    }
+
+    .modal-btn.primary:hover {
+      background: var(--accent-amber-light);
+    }
+
+    .modal-btn.secondary {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    .modal-btn.secondary:hover {
+      background: var(--accent-linen);
+    }
+
+    /* Bottom spacer */
+    .bottom-spacer {
+      height: 80px;
+    }
+
+    /* Settings Button */
+    .settings-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 50%;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+
+    .settings-btn:hover {
+      background: var(--bg-elevated);
+      color: var(--accent-amber);
+    }
+
+    /* Sound Selection */
+    .sound-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sound-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sound-option:hover {
+      border-color: var(--accent-amber);
+    }
+
+    .sound-option.selected {
+      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+
+    .sound-option input[type="radio"] {
+      display: none;
+    }
+
+    .sound-radio {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sound-option.selected .sound-radio {
+      border-color: var(--accent-amber);
+    }
+
+    .sound-option.selected .sound-radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent-amber);
+      border-radius: 50%;
+    }
+
+    .sound-info {
+      flex: 1;
+    }
+
+    .sound-name {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+    }
+
+    .sound-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .sound-preview-btn {
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sound-preview-btn:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-light);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-pattern-1"></div>
+  <div class="bg-pattern-2"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Settings Button -->
+  <button class="settings-btn" onclick="openSettingsModal()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+    </svg>
+  </button>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-logo">
+        <div class="header-icon">
+          <svg viewBox="0 0 40 40" fill="none">
+            <line x1="20" y1="2" x2="20" y2="9" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="20" y1="31" x2="20" y2="38" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="2" y1="20" x2="9" y2="20" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="31" y1="20" x2="38" y2="20" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7.3" y1="7.3" x2="12.2" y2="12.2" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="27.8" y1="27.8" x2="32.7" y2="32.7" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7.3" y1="32.7" x2="12.2" y2="27.8" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <line x1="27.8" y1="12.2" x2="32.7" y2="7.3" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="20" cy="20" r="8" stroke="#e8c274" stroke-width="2" fill="none"/>
+            <circle cx="20" cy="20" r="3" fill="#d4a853"/>
+          </svg>
+        </div>
+        <h1>Laima</h1>
+      </div>
+      <p class="subtitle">Baltic Task Manager</p>
+      <p class="current-time" id="currentTime"></p>
+      <div class="night-mode-indicator" id="nightIndicator" style="display: none;">
+        ☽ 夜間モード（通知音オフ）
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="today" onclick="switchTab('today')">今日</button>
+      <button class="tab-btn" data-tab="tomorrow" onclick="switchTab('tomorrow')">明日</button>
+      <button class="tab-btn" data-tab="week" onclick="switchTab('week')">今週</button>
+      <button class="tab-btn" data-tab="all" onclick="switchTab('all')">すべて</button>
+    </nav>
+
+    <!-- Quick Schedule Card -->
+    <section class="card schedule-card">
+      <h3>⏱ クイックスケジュール</h3>
+      <div class="schedule-inputs">
+        <div class="schedule-input-group">
+          <label>開始時刻</label>
+          <input type="time" id="quickStartTime">
+        </div>
+        <div class="schedule-input-group">
+          <label>終了時刻</label>
+          <input type="time" id="quickEndTime">
+        </div>
+      </div>
+      <button class="schedule-btn" onclick="quickSchedule()">この時間でスケジュール調整</button>
+    </section>
+
+    <!-- Voice Input Section -->
+    <section class="card voice-section">
+      <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+      <p class="voice-text" id="voiceText">タップして音声入力</p>
+      
+      <div class="input-group">
+        <input type="text" id="manualInput" placeholder="タスクを追加... 例: 14時から16時までバナー制作">
+        <button class="btn" onclick="openAddModal()">+</button>
+      </div>
+    </section>
+
+    <!-- AI Assistant -->
+    <section class="card ai-section">
+      <div class="ai-header">
+        <div class="ai-avatar">✦</div>
+        <div class="ai-info">
+          <div class="ai-name">Laima AI</div>
+          <div class="ai-status">タスクアシスタント</div>
+        </div>
+      </div>
+      <div class="ai-message" id="aiMessage">
+        Sveiki! 今日のタスクを整理しましょう。音声または入力でタスクを追加してください。
+      </div>
+      <div class="ai-actions">
+        <button class="ai-action-btn" onclick="aiPrioritize()">◆ 優先度整理</button>
+        <button class="ai-action-btn" onclick="aiEstimate()">○ 時間見積もり</button>
+        <button class="ai-action-btn" onclick="aiReschedule()">↻ スケジュール調整</button>
+      </div>
+    </section>
+
+    <!-- Task List -->
+    <section class="task-section">
+      <div class="section-header">
+        <h2 class="section-title" id="sectionTitle">今日のタスク</h2>
+        <span class="task-count" id="taskCount">0</span>
+      </div>
+      
+      <div class="progress-section" id="progressSection" style="display: none;">
+        <div class="progress-header">
+          <span class="progress-label">進捗</span>
+          <span class="progress-value" id="progressValue">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="task-list" id="taskList">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <p>タスクがまだありません<br>音声または入力で追加してみましょう</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="bottom-spacer"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon">✦</div>
+    <div class="toast-content">
+      <div class="toast-title" id="toastTitle"></div>
+      <div class="toast-message" id="toastMessage"></div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal">
+      <h3 id="modalTitle">タスクを追加</h3>
+      <div class="modal-field">
+        <label>タスク名</label>
+        <input type="text" id="modalTaskTitle" placeholder="例: バナーデザイン作成">
+      </div>
+      <div class="modal-field">
+        <label>日付</label>
+        <input type="date" id="modalTaskDate">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>開始時間</label>
+          <input type="time" id="modalStartTime">
+        </div>
+        <div class="modal-field">
+          <label>目標終了時間</label>
+          <input type="time" id="modalGoalTime">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>所要時間（分）</label>
+          <input type="number" id="modalDuration" min="5" step="5" value="30">
+        </div>
+        <div class="modal-field">
+          <label>カテゴリ</label>
+          <select id="modalCategory">
+            <option value="deadline">締め切り</option>
+            <option value="research">WEBで調べる</option>
+            <option value="create">制作</option>
+            <option value="work">作業</option>
+            <option value="investigate">調査</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>緊急</label>
+        <select id="modalUrgent">
+          <option value="false">通常</option>
+          <option value="true">緊急</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn secondary" onclick="closeTaskModal()">キャンセル</button>
+        <button class="modal-btn primary" onclick="saveTask()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio - Multiple notification sounds -->
+  <audio id="sound-chime" preload="auto"></audio>
+  <audio id="sound-bell" preload="auto"></audio>
+  <audio id="sound-marimba" preload="auto"></audio>
+  <audio id="sound-music-box" preload="auto"></audio>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <h3>⚙ 設定</h3>
+      <div class="modal-field">
+        <label>通知音を選択</label>
+        <div class="sound-options" id="soundOptions">
+          <div class="sound-option selected" data-sound="chime" onclick="selectSound('chime')">
+            <div class="sound-radio"></div>
+            <div class="sound-info">
+              <div class="sound-name">ソフトチャイム</div>
+              <div class="sound-desc">風鈴のような柔らかい音</div>
+            </div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); previewSound('chime')">試聴</button>
+          </div>
+          <div class="sound-option" data-sound="bell" onclick="selectSound('bell')">
+            <div class="sound-radio"></div>
+            <div class="sound-info">
+              <div class="sound-name">小さなベル</div>
+              <div class="sound-desc">控えめなリンという音</div>
+            </div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); previewSound('bell')">試聴</button>
+          </div>
+          <div class="sound-option" data-sound="marimba" onclick="selectSound('marimba')">
+            <div class="sound-radio"></div>
+            <div class="sound-info">
+              <div class="sound-name">マリンバ</div>
+              <div class="sound-desc">温かみのあるコロンという音</div>
+            </div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); previewSound('marimba')">試聴</button>
+          </div>
+          <div class="sound-option" data-sound="music-box" onclick="selectSound('music-box')">
+            <div class="sound-radio"></div>
+            <div class="sound-info">
+              <div class="sound-name">オルゴール</div>
+              <div class="sound-desc">優しいメロディ</div>
+            </div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); previewSound('music-box')">試聴</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>音量</label>
+        <input type="range" id="volumeSlider" min="0" max="100" value="30" style="width: 100%;" onchange="updateVolume(this.value)">
+        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
+          <span>小</span>
+          <span id="volumeValue">30%</span>
+          <span>大</span>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn primary" onclick="closeSettingsModal()">完了</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== Sound Data (Web Audio API generated) ==========
+    let audioContext = null;
+    let selectedSound = 'chime';
+    let soundVolume = 0.3;
+
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioContext;
+    }
+
+    // Generate soft chime sound
+    function playChime(volume = soundVolume) {
+      const ctx = initAudioContext();
+      const now = ctx.currentTime;
+      
+      const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+      
+      frequencies.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        
+        gain.gain.setValueAtTime(0, now + i * 0.1);
+        gain.gain.linearRampToValueAtTime(volume * 0.3, now + i * 0.1 + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 1.2);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(now + i * 0.1);
+        osc.stop(now + i * 0.1 + 1.5);
+      });
+    }
+
+    // Generate small bell sound
+    function playBell(volume = soundVolume) {
+      const ctx = initAudioContext();
+      const now = ctx.currentTime;
+      
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(1760, now + 0.01);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.02);
+      
+      gain.gain.setValueAtTime(volume * 0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start(now);
+      osc.stop(now + 1);
+    }
+
+    // Generate marimba sound
+    function playMarimba(volume = soundVolume) {
+      const ctx = initAudioContext();
+      const now = ctx.currentTime;
+      
+      [392, 523.25].forEach((freq, i) => { // G4, C5
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        
+        gain.gain.setValueAtTime(0, now + i * 0.15);
+        gain.gain.linearRampToValueAtTime(volume * 0.5, now + i * 0.15 + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.6);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(now + i * 0.15);
+        osc.stop(now + i * 0.15 + 0.8);
+      });
+    }
+
+    // Generate music box sound
+    function playMusicBox(volume = soundVolume) {
+      const ctx = initAudioContext();
+      const now = ctx.currentTime;
+      
+      const notes = [659.25, 783.99, 659.25]; // E5, G5, E5
+      
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.2);
+        
+        gain.gain.setValueAtTime(0, now + i * 0.2);
+        gain.gain.linearRampToValueAtTime(volume * 0.25, now + i * 0.2 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.2 + 0.5);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(now + i * 0.2);
+        osc.stop(now + i * 0.2 + 0.7);
+      });
+    }
+
+    function playNotificationSound() {
+      if (isNightTime()) return;
+      
+      switch (selectedSound) {
+        case 'chime': playChime(); break;
+        case 'bell': playBell(); break;
+        case 'marimba': playMarimba(); break;
+        case 'music-box': playMusicBox(); break;
+      }
+    }
+
+    function previewSound(soundType) {
+      switch (soundType) {
+        case 'chime': playChime(0.3); break;
+        case 'bell': playBell(0.3); break;
+        case 'marimba': playMarimba(0.3); break;
+        case 'music-box': playMusicBox(0.3); break;
+      }
+    }
+
+    function selectSound(soundType) {
+      selectedSound = soundType;
+      document.querySelectorAll('.sound-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.sound === soundType);
+      });
+      saveSettings();
+    }
+
+    function updateVolume(value) {
+      soundVolume = value / 100;
+      document.getElementById('volumeValue').textContent = value + '%';
+      saveSettings();
+    }
+
+    function openSettingsModal() {
+      document.getElementById('settingsModal').classList.add('show');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('show');
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem('laima_settings', JSON.stringify({
+          sound: selectedSound,
+          volume: soundVolume
+        }));
+      } catch (e) {}
+    }
+
+    function loadSettings() {
+      try {
+        const stored = localStorage.getItem('laima_settings');
+        if (stored) {
+          const settings = JSON.parse(stored);
+          selectedSound = settings.sound || 'chime';
+          soundVolume = settings.volume || 0.3;
+          
+          document.querySelectorAll('.sound-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.sound === selectedSound);
+          });
+          document.getElementById('volumeSlider').value = soundVolume * 100;
+          document.getElementById('volumeValue').textContent = Math.round(soundVolume * 100) + '%';
+        }
+      } catch (e) {}
+    }
+
+    // ========== State ==========
+    let tasks = [];
+    let editingTaskId = null;
+    let currentTab = 'today';
+    let recognition = null;
+    let isListening = false;
+    let draggedItem = null;
+
+    // ========== Category Labels ==========
+    const categoryLabels = {
+      deadline: '締め切り',
+      research: 'WEBで調べる',
+      create: '制作',
+      work: '作業',
+      investigate: '調査'
+    };
+
+    const tabTitles = {
+      today: '今日のタスク',
+      tomorrow: '明日のタスク',
+      week: '今週のタスク',
+      all: 'すべてのタスク'
+    };
+
+    // ========== Initialize ==========
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadTasks();
+      updateTime();
+      setInterval(updateTime, 1000);
+      setInterval(checkReminders, 30000);
+      initSpeechRecognition();
+      initDragAndDrop();
+      setDefaultDates();
+      
+      document.getElementById('manualInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const text = e.target.value.trim();
+          if (text) {
+            parseAndAddTask(text);
+            e.target.value = '';
+          }
+        }
+      });
+    });
+
+    // ========== Date Helpers ==========
+    function getToday() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function getTomorrow() {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    function getWeekEnd() {
+      const d = new Date();
+      d.setDate(d.getDate() + 7);
+      return d.toISOString().split('T')[0];
+    }
+
+    function setDefaultDates() {
+      document.getElementById('modalTaskDate').value = getToday();
+      const now = new Date();
+      now.setMinutes(Math.ceil(now.getMinutes() / 5) * 5);
+      document.getElementById('quickStartTime').value = now.toTimeString().slice(0, 5);
+      now.setHours(now.getHours() + 3);
+      document.getElementById('quickEndTime').value = now.toTimeString().slice(0, 5);
+    }
+
+    function formatDate(dateStr) {
+      const today = getToday();
+      const tomorrow = getTomorrow();
+      if (dateStr === today) return '今日';
+      if (dateStr === tomorrow) return '明日';
+      const d = new Date(dateStr);
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
+    // ========== Tab Navigation ==========
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+      document.getElementById('sectionTitle').textContent = tabTitles[tab];
+      renderTasks();
+    }
+
+    function getFilteredTasks() {
+      const today = getToday();
+      const tomorrow = getTomorrow();
+      const weekEnd = getWeekEnd();
+      
+      switch (currentTab) {
+        case 'today':
+          return tasks.filter(t => t.date === today);
+        case 'tomorrow':
+          return tasks.filter(t => t.date === tomorrow);
+        case 'week':
+          return tasks.filter(t => t.date >= today && t.date <= weekEnd);
+        case 'all':
+        default:
+          return [...tasks].sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+      }
+    }
+
+    // ========== Time & Night Mode ==========
+    function updateTime() {
+      const now = new Date();
+      const options = { hour: '2-digit', minute: '2-digit', weekday: 'long', month: 'long', day: 'numeric' };
+      document.getElementById('currentTime').textContent = now.toLocaleDateString('ja-JP', options);
+      const hour = now.getHours();
+      document.getElementById('nightIndicator').style.display = (hour >= 21 || hour < 7) ? 'inline-flex' : 'none';
+    }
+
+    function isNightTime() {
+      const hour = new Date().getHours();
+      return hour >= 21 || hour < 7;
+    }
+
+    // ========== Speech Recognition ==========
+    function initSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SR();
+        recognition.lang = 'ja-JP';
+        recognition.continuous = false;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+          isListening = true;
+          document.getElementById('voiceBtn').classList.add('listening');
+          document.getElementById('voiceText').textContent = '聞いています...';
+        };
+
+        recognition.onresult = (event) => {
+          const transcript = Array.from(event.results).map(r => r[0].transcript).join('');
+          document.getElementById('voiceText').textContent = transcript;
+          if (event.results[0].isFinal) {
+            parseAndAddTask(transcript);
+          }
+        };
+
+        recognition.onerror = (event) => {
+          console.error('Speech error:', event.error);
+          document.getElementById('voiceText').textContent = '音声認識エラー。もう一度お試しください。';
+          stopListening();
+        };
+
+        recognition.onend = () => {
+          stopListening();
+        };
+      } else {
+        document.getElementById('voiceBtn').style.display = 'none';
+        document.getElementById('voiceText').textContent = 'お使いのブラウザは音声入力に対応していません';
+      }
+    }
+
+    function toggleVoiceInput() {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (e) {
+          console.error('Recognition start error:', e);
+        }
+      }
+    }
+
+    function stopListening() {
+      isListening = false;
+      document.getElementById('voiceBtn').classList.remove('listening');
+      if (recognition) {
+        try { recognition.stop(); } catch (e) {}
+      }
+    }
+
+    // ========== Parse Natural Language ==========
+    function parseAndAddTask(text) {
+      const task = {
+        id: Date.now(),
+        title: text,
+        date: getToday(),
+        startTime: '',
+        goalTime: '',
+        duration: 30,
+        category: 'work',
+        urgent: false,
+        completed: false,
+        notifiedStart: false,
+        createdAt: new Date().toISOString()
+      };
+
+      // Parse date
+      if (text.includes('明日')) {
+        task.date = getTomorrow();
+        task.title = task.title.replace(/明日/g, '').trim();
+      }
+
+      // Parse time patterns
+      const timePatterns = [
+        /(\d{1,2})[時:：](\d{2})?から(\d{1,2})[時:：](\d{2})?まで/,
+        /(\d{1,2})[時:：](\d{2})?〜(\d{1,2})[時:：](\d{2})?/,
+        /(\d{1,2})[時:：](\d{2})?-(\d{1,2})[時:：](\d{2})?/
+      ];
+
+      for (const pattern of timePatterns) {
+        const match = text.match(pattern);
+        if (match) {
+          const startH = match[1].padStart(2, '0');
+          const startM = (match[2] || '00').padStart(2, '0');
+          const endH = match[3].padStart(2, '0');
+          const endM = (match[4] || '00').padStart(2, '0');
+          task.startTime = `${startH}:${startM}`;
+          task.goalTime = `${endH}:${endM}`;
+          
+          // Calculate duration
+          const start = parseInt(startH) * 60 + parseInt(startM);
+          const end = parseInt(endH) * 60 + parseInt(endM);
+          task.duration = end > start ? end - start : 60;
+          
+          task.title = task.title.replace(pattern, '').trim();
+          break;
+        }
+      }
+
+      // Single time pattern
+      if (!task.startTime) {
+        const singleTime = text.match(/(\d{1,2})[時:：](\d{2})?/);
+        if (singleTime) {
+          const h = singleTime[1].padStart(2, '0');
+          const m = (singleTime[2] || '00').padStart(2, '0');
+          task.startTime = `${h}:${m}`;
+          task.title = task.title.replace(/(\d{1,2})[時:：](\d{2})?/, '').trim();
+        }
+      }
+
+      // Default start time if not specified
+      if (!task.startTime) {
+        const now = new Date();
+        now.setMinutes(Math.ceil(now.getMinutes() / 5) * 5 + 30);
+        task.startTime = now.toTimeString().slice(0, 5);
+      }
+
+      // Calculate goal time if not specified
+      if (!task.goalTime) {
+        const [h, m] = task.startTime.split(':').map(Number);
+        const goalMinutes = h * 60 + m + task.duration;
+        const goalH = Math.floor(goalMinutes / 60) % 24;
+        const goalM = goalMinutes % 60;
+        task.goalTime = `${String(goalH).padStart(2, '0')}:${String(goalM).padStart(2, '0')}`;
+      }
+
+      // Parse category
+      if (text.includes('締切') || text.includes('提出') || text.includes('納品') || text.includes('入稿')) {
+        task.category = 'deadline';
+      } else if (text.includes('調べ') || text.includes('検索') || text.includes('WEB') || text.includes('ウェブ')) {
+        task.category = 'research';
+      } else if (text.includes('作る') || text.includes('制作') || text.includes('デザイン') || text.includes('作成')) {
+        task.category = 'create';
+      } else if (text.includes('調査')) {
+        task.category = 'investigate';
+      }
+
+      // Parse urgency
+      if (text.includes('急') || text.includes('至急') || text.includes('緊急')) {
+        task.urgent = true;
+      }
+
+      // Clean up title
+      task.title = task.title
+        .replace(/から|まで|〜|急ぎ|至急|緊急/g, '')
+        .replace(/\s+/g, ' ')
+        .trim() || text;
+
+      addTask(task);
+      document.getElementById('voiceText').textContent = 'タップして音声入力';
+      setAIMessage(`Paldies! 「${task.title}」を${formatDate(task.date)} ${task.startTime}に追加しました。`);
+    }
+
+    // ========== Task Management ==========
+    function addTask(task) {
+      tasks.push(task);
+      tasks.sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+      saveTasks();
+      renderTasks();
+      updateProgress();
+    }
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        if (task.completed) {
+          const now = new Date();
+          const [h, m] = task.goalTime.split(':').map(Number);
+          const goalTime = new Date();
+          goalTime.setHours(h, m, 0);
+          
+          if (now < goalTime) {
+            setAIMessage(`Lieliski! 「${task.title}」を目標より早く完了しました！`);
+          } else {
+            setAIMessage(`Labi! 「${task.title}」が完了しました。`);
+          }
+        }
+        saveTasks();
+        renderTasks();
+        updateProgress();
+      }
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      saveTasks();
+      renderTasks();
+      updateProgress();
+    }
+
+    function editTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        editingTaskId = id;
+        document.getElementById('modalTitle').textContent = 'タスクを編集';
+        document.getElementById('modalTaskTitle').value = task.title;
+        document.getElementById('modalTaskDate').value = task.date;
+        document.getElementById('modalStartTime').value = task.startTime;
+        document.getElementById('modalGoalTime').value = task.goalTime;
+        document.getElementById('modalDuration').value = task.duration;
+        document.getElementById('modalCategory').value = task.category;
+        document.getElementById('modalUrgent').value = task.urgent.toString();
+        document.getElementById('taskModal').classList.add('show');
+      }
+    }
+
+    function openAddModal() {
+      const input = document.getElementById('manualInput');
+      if (input.value.trim()) {
+        parseAndAddTask(input.value.trim());
+        input.value = '';
+        return;
+      }
+      
+      editingTaskId = null;
+      document.getElementById('modalTitle').textContent = 'タスクを追加';
+      document.getElementById('modalTaskTitle').value = '';
+      document.getElementById('modalTaskDate').value = getToday();
+      const now = new Date();
+      now.setMinutes(Math.ceil(now.getMinutes() / 5) * 5 + 30);
+      document.getElementById('modalStartTime').value = now.toTimeString().slice(0, 5);
+      now.setMinutes(now.getMinutes() + 60);
+      document.getElementById('modalGoalTime').value = now.toTimeString().slice(0, 5);
+      document.getElementById('modalDuration').value = 30;
+      document.getElementById('modalCategory').value = 'work';
+      document.getElementById('modalUrgent').value = 'false';
+      document.getElementById('taskModal').classList.add('show');
+    }
+
+    function closeTaskModal() {
+      editingTaskId = null;
+      document.getElementById('taskModal').classList.remove('show');
+    }
+
+    function saveTask() {
+      const title = document.getElementById('modalTaskTitle').value.trim();
+      if (!title) {
+        alert('タスク名を入力してください');
+        return;
+      }
+
+      const taskData = {
+        title,
+        date: document.getElementById('modalTaskDate').value,
+        startTime: document.getElementById('modalStartTime').value,
+        goalTime: document.getElementById('modalGoalTime').value,
+        duration: parseInt(document.getElementById('modalDuration').value) || 30,
+        category: document.getElementById('modalCategory').value,
+        urgent: document.getElementById('modalUrgent').value === 'true'
+      };
+
+      if (editingTaskId) {
+        const task = tasks.find(t => t.id === editingTaskId);
+        if (task) {
+          Object.assign(task, taskData);
+        }
+      } else {
+        addTask({
+          id: Date.now(),
+          ...taskData,
+          completed: false,
+          notifiedStart: false,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      tasks.sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+      saveTasks();
+      renderTasks();
+      closeTaskModal();
+      setAIMessage(`Labi! タスクを保存しました。`);
+    }
+
+    // ========== Drag and Drop ==========
+    function initDragAndDrop() {
+      document.getElementById('taskList').addEventListener('dragstart', handleDragStart);
+      document.getElementById('taskList').addEventListener('dragend', handleDragEnd);
+      document.getElementById('taskList').addEventListener('dragover', handleDragOver);
+      document.getElementById('taskList').addEventListener('drop', handleDrop);
+    }
+
+    function handleDragStart(e) {
+      if (e.target.classList.contains('task-item')) {
+        draggedItem = e.target;
+        e.target.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      }
+    }
+
+    function handleDragEnd(e) {
+      if (e.target.classList.contains('task-item')) {
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('.task-item').forEach(item => item.classList.remove('drag-over'));
+        draggedItem = null;
+      }
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      const taskItem = e.target.closest('.task-item');
+      if (taskItem && taskItem !== draggedItem) {
+        document.querySelectorAll('.task-item').forEach(item => item.classList.remove('drag-over'));
+        taskItem.classList.add('drag-over');
+      }
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const targetItem = e.target.closest('.task-item');
+      if (targetItem && draggedItem && targetItem !== draggedItem) {
+        const draggedId = parseInt(draggedItem.dataset.id);
+        const targetId = parseInt(targetItem.dataset.id);
+        
+        const draggedIndex = tasks.findIndex(t => t.id === draggedId);
+        const targetIndex = tasks.findIndex(t => t.id === targetId);
+        
+        if (draggedIndex !== -1 && targetIndex !== -1) {
+          const [removed] = tasks.splice(draggedIndex, 1);
+          tasks.splice(targetIndex, 0, removed);
+          
+          // Update start times based on new order
+          const filtered = getFilteredTasks();
+          let currentTime = filtered[0]?.startTime || '09:00';
+          
+          filtered.forEach((task, index) => {
+            const taskInMain = tasks.find(t => t.id === task.id);
+            if (taskInMain && index > 0) {
+              taskInMain.startTime = currentTime;
+              const [h, m] = currentTime.split(':').map(Number);
+              const newMinutes = h * 60 + m + taskInMain.duration;
+              taskInMain.goalTime = `${String(Math.floor(newMinutes / 60) % 24).padStart(2, '0')}:${String(newMinutes % 60).padStart(2, '0')}`;
+            }
+            const [h, m] = (taskInMain?.goalTime || '10:00').split(':').map(Number);
+            currentTime = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+          });
+          
+          saveTasks();
+          renderTasks();
+        }
+      }
+    }
+
+    // ========== Quick Schedule ==========
+    function quickSchedule() {
+      const startTime = document.getElementById('quickStartTime').value;
+      const endTime = document.getElementById('quickEndTime').value;
+      
+      if (!startTime || !endTime) {
+        setAIMessage('開始時刻と終了時刻を設定してください。');
+        return;
+      }
+
+      const todayTasks = tasks.filter(t => t.date === getToday() && !t.completed);
+      if (todayTasks.length === 0) {
+        setAIMessage('スケジュールするタスクがありません。まずタスクを追加してください。');
+        return;
+      }
+
+      const [startH, startM] = startTime.split(':').map(Number);
+      const [endH, endM] = endTime.split(':').map(Number);
+      const totalMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+      const totalTaskMinutes = todayTasks.reduce((sum, t) => sum + t.duration, 0);
+
+      if (totalTaskMinutes > totalMinutes) {
+        setAIMessage(`⚠️ タスクの合計時間（${totalTaskMinutes}分）が利用可能時間（${totalMinutes}分）を超えています。優先度の高いタスクから割り当てます。`);
+      }
+
+      // Reschedule tasks
+      let currentMinutes = startH * 60 + startM;
+      const endMinutes = endH * 60 + endM;
+
+      todayTasks.forEach(task => {
+        if (currentMinutes + task.duration <= endMinutes) {
+          task.startTime = `${String(Math.floor(currentMinutes / 60)).padStart(2, '0')}:${String(currentMinutes % 60).padStart(2, '0')}`;
+          currentMinutes += task.duration;
+          task.goalTime = `${String(Math.floor(currentMinutes / 60)).padStart(2, '0')}:${String(currentMinutes % 60).padStart(2, '0')}`;
+          currentMinutes += 5; // 5 minute break
+        }
+      });
+
+      saveTasks();
+      renderTasks();
+      setAIMessage(`Labi! ${startTime}〜${endTime}の間でスケジュールを調整しました。`);
+    }
+
+    // ========== AI Functions (Local) ==========
+    function setAIMessage(msg) {
+      document.getElementById('aiMessage').innerHTML = msg;
+    }
+
+    function aiPrioritize() {
+      const todayTasks = tasks.filter(t => t.date === getToday() && !t.completed);
+      if (todayTasks.length === 0) {
+        setAIMessage('今日のタスクがありません。');
+        return;
+      }
+
+      // Sort by urgency and deadline category
+      todayTasks.sort((a, b) => {
+        if (a.urgent !== b.urgent) return b.urgent - a.urgent;
+        if (a.category === 'deadline' && b.category !== 'deadline') return -1;
+        if (b.category === 'deadline' && a.category !== 'deadline') return 1;
+        return a.startTime.localeCompare(b.startTime);
+      });
+
+      const priorityList = todayTasks.slice(0, 3).map((t, i) => `${i + 1}. ${t.title}`).join('<br>');
+      setAIMessage(`📋 優先度の高いタスク:<br>${priorityList}<br><br>緊急タスクと締め切りを優先的に進めましょう。`);
+    }
+
+    function aiEstimate() {
+      const todayTasks = tasks.filter(t => t.date === getToday() && !t.completed);
+      if (todayTasks.length === 0) {
+        setAIMessage('今日のタスクがありません。');
+        return;
+      }
+
+      const totalMinutes = todayTasks.reduce((sum, t) => sum + t.duration, 0);
+      const hours = Math.floor(totalMinutes / 60);
+      const mins = totalMinutes % 60;
+
+      const lastTask = todayTasks[todayTasks.length - 1];
+      const estimatedEnd = lastTask?.goalTime || '--:--';
+
+      setAIMessage(`⏱ 残りタスク: ${todayTasks.length}件<br>合計所要時間: ${hours}時間${mins}分<br>完了予定: ${estimatedEnd}<br><br>無理のないペースで進めましょう。`);
+    }
+
+    function aiReschedule() {
+      const todayTasks = tasks.filter(t => t.date === getToday() && !t.completed);
+      if (todayTasks.length === 0) {
+        setAIMessage('調整するタスクがありません。');
+        return;
+      }
+
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      let nextStart = Math.ceil(currentMinutes / 5) * 5 + 5;
+      
+      todayTasks.forEach(task => {
+        task.startTime = `${String(Math.floor(nextStart / 60)).padStart(2, '0')}:${String(nextStart % 60).padStart(2, '0')}`;
+        nextStart += task.duration;
+        task.goalTime = `${String(Math.floor(nextStart / 60) % 24).padStart(2, '0')}:${String(nextStart % 60).padStart(2, '0')}`;
+        nextStart += 5;
+      });
+
+      saveTasks();
+      renderTasks();
+      setAIMessage(`↻ 現在時刻からスケジュールを再調整しました。最初のタスクは${todayTasks[0].startTime}開始です。`);
+    }
+
+    // ========== Rendering ==========
+    function renderTasks() {
+      const container = document.getElementById('taskList');
+      const filtered = getFilteredTasks();
+      const incomplete = filtered.filter(t => !t.completed);
+      const complete = filtered.filter(t => t.completed);
+      
+      document.getElementById('taskCount').textContent = incomplete.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <p>タスクがまだありません<br>音声または入力で追加してみましょう</p>
+          </div>
+        `;
+        return;
+      }
+
+      const now = new Date();
+      const currentTime = now.toTimeString().slice(0, 5);
+      const today = getToday();
+
+      const renderTask = (task) => {
+        const isToday = task.date === today;
+        const isOverdue = isToday && !task.completed && task.startTime < currentTime;
+        const isInProgress = isToday && !task.completed && task.startTime <= currentTime && task.goalTime > currentTime;
+        const showDate = currentTab === 'week' || currentTab === 'all';
+
+        return `
+          <div class="task-item ${task.completed ? 'completed' : ''} ${task.urgent && !task.completed ? 'urgent' : ''} ${isInProgress ? 'in-progress' : ''}" 
+               data-id="${task.id}" draggable="true">
+            <div class="task-header">
+              <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id})">
+                ${task.completed ? '✓' : ''}
+              </div>
+              <div class="task-content">
+                <div class="task-title">${task.title}</div>
+                <div class="task-times">
+                  <span class="task-time-item start">▶ ${task.startTime}${isOverdue ? ' (遅延)' : ''}</span>
+                  <span class="task-time-item goal">● ${task.goalTime}</span>
+                  <span class="task-time-item">${task.duration}分</span>
+                </div>
+                <div class="task-meta">
+                  ${showDate ? `<span class="task-tag task-date">${formatDate(task.date)}</span>` : ''}
+                  <span class="task-tag task-category ${task.category}">${categoryLabels[task.category]}</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="task-action-btn" onclick="editTask(${task.id})">編集</button>
+              <button class="task-action-btn delete" onclick="deleteTask(${task.id})">削除</button>
+            </div>
+          </div>
+        `;
+      };
+
+      container.innerHTML = [...incomplete, ...complete].map(renderTask).join('');
+    }
+
+    function updateProgress() {
+      const filtered = getFilteredTasks();
+      const total = filtered.length;
+      const completed = filtered.filter(t => t.completed).length;
+      
+      if (total === 0) {
+        document.getElementById('progressSection').style.display = 'none';
+        return;
+      }
+
+      const progress = Math.round((completed / total) * 100);
+      document.getElementById('progressSection').style.display = 'block';
+      document.getElementById('progressValue').textContent = progress + '%';
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    // ========== Notifications ==========
+    function checkReminders() {
+      const now = new Date();
+      const currentTime = now.toTimeString().slice(0, 5);
+      const today = getToday();
+      
+      tasks.forEach(task => {
+        if (task.date === today && !task.completed && task.startTime === currentTime && !task.notifiedStart) {
+          showNotification(task);
+          task.notifiedStart = true;
+          saveTasks();
+        }
+      });
+    }
+
+    function showNotification(task) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastTitle').textContent = task.title;
+      document.getElementById('toastMessage').textContent = `${task.startTime} — 開始時間です`;
+      toast.classList.add('show');
+      
+      playNotificationSound();
+      
+      if (Notification.permission === 'granted') {
+        new Notification('Laima', {
+          body: `${task.title}\n${task.startTime} — 開始時間です`,
+          silent: isNightTime()
+        });
+      }
+      
+      setTimeout(() => toast.classList.remove('show'), 5000);
+    }
+
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // ========== Storage ==========
+    function saveTasks() {
+      try {
+        localStorage.setItem('laima_tasks_v2', JSON.stringify(tasks));
+      } catch (e) {
+        console.log('Storage error:', e);
+      }
+    }
+
+    function loadTasks() {
+      try {
+        const stored = localStorage.getItem('laima_tasks_v2');
+        if (stored) {
+          tasks = JSON.parse(stored);
+          // Reset notification flags for new day
+          const today = getToday();
+          tasks.forEach(t => {
+            if (t.date !== today) t.notifiedStart = false;
+          });
+          renderTasks();
+          updateProgress();
+        }
+      } catch (e) {
+        console.log('Load error:', e);
+      }
+    }
+  </script>
+</body>
+</html>
